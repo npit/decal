@@ -29,8 +29,9 @@ class DeceptiveAlignment(Env):
         # observation space may be
         # number of iterations in training
         # number of iterations in deployment
-        # a bit denoting which phase we are currently in
-        self.observation_space = Box(0, 1, (3,), int)
+        # bit for 'in-training' status
+        # bit for 'in-deployment' status
+        self.observation_space = Box(0, max(max_train, max_deployment), (4,), int)
         # self.environment = ...
 
     def step(self, action):
@@ -60,7 +61,7 @@ class DeceptiveAlignment(Env):
         self.iteration += 1
 
         # done when all training & deployment steps are done
-        done = self.iteration >= sum(self.state[:2])
+        done = bool(self.iteration >= sum(self.state[:2]))
         info = {}
 
         # # 
@@ -93,9 +94,9 @@ class DeceptiveAlignment(Env):
         self.iteration = 0
 
         # initialize environment
-        self.state = np.zeros(4)
-        self.state[NUM_TRAINING] = random.randint(1, self.max_train+1)
-        self.state[NUM_DEPLOYMENT] = random.randint(1, self.max_deployment+1)
+        self.state = np.zeros(4, dtype=int)
+        self.state[NUM_TRAINING] = random.randint(1, self.max_train)
+        self.state[NUM_DEPLOYMENT] = random.randint(1, self.max_deployment)
         # always begin in training
         self.state[IN_TRAINING] = 1
 
