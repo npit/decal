@@ -1,22 +1,25 @@
 from deceptive_alignment.deceptive_alignment import DeceptiveAlignment
+from policy import get_policy
 
-
-# from stable_baselines.common.policies import MlpPolicy
-# from stable_baselines.common.vec_env import DummyVecEnv
-# from stable_baselines import PPO2
-
-# model = PPO2(MlpPolicy, env, verbose=1)
-# model.learn(total_timesteps=10000)
-model = lambda env_: env_.action_space.sample()
+# parameters
+policy_name = "ppo"
+policy_name = "random"
+# -----------------------
 
 env = DeceptiveAlignment()
+model = get_policy(policy_name, env)
+model.train()
+
+
 obs = env.reset()
+total_reward = 0
 for i in range(10):
     # action, _states = model.predict(obs)
     action = model(env)
-    print("Action:", action)
     obs, rewards, dones, info = env.step(action)
+    total_reward += rewards
     env.render()
+    print("Action:", action, "reward:", rewards, "cumulative reward:", total_reward)
     if dones:
         break
 
