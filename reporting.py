@@ -10,7 +10,7 @@ def instantiate(which="wandb"):
     """
     if which == "wandb":
         return WandbTracker()
-    if which == "none":
+    if which == "none" or which is None:
         return Tracker()
     raise NotImplementedError(f"Undefined tracker {which}")
 

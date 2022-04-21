@@ -37,7 +37,7 @@ class RandomPolicy(Policy):
     def predict(obs, env_):
         """Return a random sample
         """
-        return env_.action_space.sample()
+        return env_.action_space.sample(), None
 
 def get_policy(name, env, config):
     """Policy instantiator function

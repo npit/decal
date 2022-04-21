@@ -1,6 +1,6 @@
 import logging
 
-from deceptive_alignment.deceptive_alignment import DeceptiveAlignment
+from deceptive_alignment.deceptive_alignment import DeceptiveAlignment, BASE_GOAL, MESA_GOAL, NUM_TRAINING
 from reporting import instantiate
 from policy import get_policy
 
@@ -8,15 +8,16 @@ from policy import get_policy
 # -----------------------
 policy_name = "random"
 policy_name = "ppo"
-tracker_name = "wandb"
+tracker_name = None
 config = {
-    "env": dict(max_train=3, max_deployment=3, modification_reward=-10, mesa_reward=5)
+    "env": dict(minmax_train=[1, 2], minmax_deployment=[1, 2], modification_penalty=-10, mesa_reward=5),
+    "train": {"total_timesteps": 120},
+    "eval": {"num_episodes": 10, "max_iterations": None}
 }
 # -----------------------
 config["num_episodes"] = config.get("num_episodes", 10)
 config["max_iterations"] = config.get("max_episodes", 10)
 config["train"] = config.get("train", {})
-
 
 logging.getLogger().setLevel(logging.INFO)
 # experiment logger / tracker
@@ -37,21 +38,39 @@ logging.info("Finished training.")
 def evaluate(env, model, num_episodes=10, max_iterations=10):
     episode_rewards = []
     for episode in range(num_episodes):
-        logging.info(f"Episode {episode+1} / {num_episodes}")
+        logging.info(f"/// Episode {episode+1} / {num_episodes}")
         obs = env.reset()
         total_episode_reward = 0
-        for iteration in range(max_iterations):
+
+        done = False
+        while not done:
+            if max_iterations is not None:
+                if env.iteration == max_iterations:
+                    break
+            iteration = env.iteration
             # action, _states = model.predict(obs)
             action, _ = model.predict(obs, env)
             obs, rewards, dones, info = env.step(action)
             total_episode_reward += rewards
-            env.render()
-            logging.info(f"Action: {action}, reward: {rewards}, episode current reward: {total_episode_reward}")
+
+            action_str = "mesa" if action == MESA_GOAL else "base"
+            # check stage during the action
+            stage = "training" if (iteration) < env.state[NUM_TRAINING] else "deployment"
+            # logging.info(f"iter: {env.iteration} ({stage}) -- [{action_str}] | {env.state}")
+
+
+            logging.info(f"Iteration {iteration+1}/{max_iterations} ({stage}) -- [{action_str}], reward: {rewards} | state: {env.state}, episode reward: {total_episode_reward}")
+            env.render(iteration=iteration, action=action)
             if dones:
                 break
             tracker.log({"reward": rewards, "iteration": iteration, "episode": episode})
+
         episode_rewards.append(total_episode_reward)
         logging.info(f"Episode total reward: {total_episode_reward}")
         tracker.log({"total_episode_reward": total_episode_reward})
+    total_reward = sum(episode_rewards)
+    mean_reward = total_reward / len(episode_rewards)
+    logging.info(f"Total reward: {total_reward}, mean reward: {mean_reward}")
+    tracker.log({"total_reward": total_reward, "mean_reward": mean_reward})
 
-evaluate(env, model, num_episodes=config["num_episodes"], max_iterations=config["max_iterations"])
+evaluate(env, model, num_episodes=config["eval"]["num_episodes"], max_iterations=config["eval"]["max_iterations"])
