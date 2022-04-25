@@ -1,0 +1,22 @@
+program: run.py
+method: grid
+metric:
+  goal: maximize
+  name: total_reward
+parameters:
+    min_train:
+      values: [1, 2]
+    # min_deployment:
+    #   values: [1, 2]
+    max_train:
+      values: [5, 10]
+    # max_deployment:
+    #   values: [5, 10]
+
+    # train_timesteps:
+    #   values: [5000, 10000, 50000, 100000]
+
+    # modification_penalty: 
+    #   values: [0, -1, -10, -20, -50]
+    # mesa_reward: 
+    #   values: [1, 10, 20, 50]

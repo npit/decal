@@ -129,6 +129,6 @@ class DeceptiveAlignment(Env):
     def render(self, mode="human", action=None, iteration=None):
         """Environment render function
         """
-        logging.info(f"iter: {self.iteration} | {self.state}")
+        logging.debug(f"iter: {self.iteration} | {self.state}")
 
 
