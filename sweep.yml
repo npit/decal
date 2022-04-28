@@ -1,4 +1,9 @@
 program: run.py
+command:
+  - venv/bin/python
+  - ${program}
+  - ${args}
+
 method: grid
 metric:
   goal: maximize
@@ -16,7 +21,7 @@ parameters:
     # train_timesteps:
     #   values: [5000, 10000, 50000, 100000]
 
-    # modification_penalty: 
+    # modification_penalty:
     #   values: [0, -1, -10, -20, -50]
-    # mesa_reward: 
+    # mesa_reward:
     #   values: [1, 10, 20, 50]

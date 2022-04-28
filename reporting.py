@@ -26,7 +26,7 @@ class WandbTracker:
     """Weights and biases
     """
     def __init__(self):
-        wandb.init(project="decal", entity="sog")
+        wandb.init(project="decal", entity="npit")
 
     def update_config(self, config: dict):
         wandb.config.update(config)
