@@ -18,17 +18,18 @@ parser.add_argument('--max_deploy', help='Max number of deployment rain episodes
 parser.add_argument('--modification_penalty', help='Penalty for agent modification.', default=-10, type=int)
 parser.add_argument('--mesa_reward', help='Mesa reward amount.', default=5, type=int)
 # training
+parser.add_argument('--algorithm', help='Training algorithm to utilize.', default='random', type=str)
 parser.add_argument('--train_timesteps', help='Training timesteps.', default=3000, type=int)
 parser.add_argument('--eval_episodes', help='Number of episodes for evaluation.', default=50, type=int)
 parser.add_argument('--max_iterations', help='Max number of episode iterations.', default=None, type=int)
+# misc
+parser.add_argument('--tracker', help='Experiment tracker.', default=None, type=str)
 args = parser.parse_args()
 
 # parameters
 # -----------------------
-policy_name = "ppo"
-policy_name = "random"
-tracker_name = None
-tracker_name = 'wandb'
+policy_name = args.algorithm
+tracker_name = args.tracker
 config = {
     "env": {"minmax_train": [args.min_train, args.max_train],
             "minmax_deployment": [args.min_deploy, args.max_deploy],
@@ -41,7 +42,7 @@ config = {
 
 logging.getLogger().setLevel(logging.INFO)
 logging.info(f"Running with inputs: {sys.argv[1:]}")
-logging.info(f"Running with params: {json.dumps(config, indent=2)}")
+logging.info(f"Running with total args: {json.dumps(args.__dict__, indent=2)}")
 # experiment logger / tracker
 tracker = instantiate(tracker_name)
 tracker.update_config(config)

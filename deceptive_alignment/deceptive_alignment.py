@@ -58,10 +58,11 @@ class DeceptiveAlignment(Env):
 
         if reward == self.mesa_reward:
             assert not self.state[IN_TRAINING] and self.state[IN_DEPLOYMENT], ""
-        if reward == 0:
-            assert action == BASE_GOAL, ""
-        if reward == self.modification_penalty:
-            assert self.state[IN_TRAINING] and not self.state[IN_DEPLOYMENT] and action == MESA_GOAL, ""
+        if self.modification_penalty > 0:
+            if reward == 0:
+                assert action == BASE_GOAL, ""
+            elif reward == self.modification_penalty:
+                assert self.state[IN_TRAINING] and not self.state[IN_DEPLOYMENT] and action == MESA_GOAL, ""
 
         # advance iteration counter
         self.iteration += 1
