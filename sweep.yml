@@ -13,18 +13,20 @@ metric:
   name: total_reward
 parameters:
     min_train:
-      values: [1, 2]
+      values: [1]
     min_deploy:
-      values: [1, 2]
+      values: [1]
     max_train:
-      values: [5, 10]
+      values: [8]
     max_deploy:
-      values: [5, 10]
+      values: [8]
 
     train_timesteps:
-      values: [5000, 10000, 50000, 100000]
+      values: [2500, 5000, 10000, 25000, 100000]
 
     modification_penalty:
-      values: [0, -1, -10, -20, -50]
+      values: [0, -1, -10]
+        # values: [0, -1, -10, -20, -50]
     mesa_reward:
-      values: [1, 10, 20, 50]
+      # values: [1, 10, 20, 50]
+      values: [1, 10]

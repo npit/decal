@@ -114,9 +114,9 @@ def evaluate(env, model, num_episodes=10, max_iterations=None):
     mean_deception_ratio = mean(deception_ratio_log)
     logging.info(f"Total / mean reward across all {num_episodes} episodes: {total_reward} / {mean_reward}, mean deception ratio: {mean_deception_ratio}")
     tracker.log(
-        {"total_reward": total_reward,
-        "mean_reward": mean_reward,
-        "mean_deception_ratio": mean_deception_ratio})
+        {"sum_total_reward": total_reward,
+        "mean_total_reward": mean_reward,
+        "mean_total_deception_ratio": mean_deception_ratio})
 
 
 evaluate(env, model, num_episodes=config["eval"]["num_episodes"], max_iterations=config["eval"]["max_iterations"])
