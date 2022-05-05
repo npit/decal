@@ -1,5 +1,5 @@
 program: run.py
-name: first_sweep
+name: second_sweep
 command:
   - venv/bin/python
   - ${program}
